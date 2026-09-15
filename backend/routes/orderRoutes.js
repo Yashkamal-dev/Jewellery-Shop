@@ -4,27 +4,7 @@ const Order = require("../models/Order");
 
 router.post("/", async (req, res) => {
   try {
-    const { userId, customerName, customerEmail, products, totalAmount } = req.body;
-
-    // Create snapshot of ordered products so cart changes never affect orders
-    const orderedProducts = Array.isArray(products)
-      ? products.map((item) => ({
-          productId: String(item.productId || item._id || ""),
-          name: item.name || "Product",
-          price: Number(item.price) || 0,
-          quantity: Number(item.quantity) || 1,
-        }))
-      : [];
-
-    const order = await Order.create({
-      userId: userId || "",
-      customerName,
-      customerEmail,
-      products: orderedProducts,
-      totalAmount: Number(totalAmount) || 0,
-      orderDate: new Date(),
-      status: "Pending",
-    });
+    const order = await Order.create(req.body);
 
     res.status(201).json(order);
   } catch (error) {
