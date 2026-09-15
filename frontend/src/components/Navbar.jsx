@@ -20,6 +20,7 @@ function Navbar() {
   // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
     setUser(null);
     navigate("/login");
   };

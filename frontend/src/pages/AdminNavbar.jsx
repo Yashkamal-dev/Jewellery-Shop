@@ -6,6 +6,7 @@ function AdminNavbar() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
     navigate("/login");
   };
 

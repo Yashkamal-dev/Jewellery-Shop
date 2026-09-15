@@ -7,6 +7,7 @@ const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -59,6 +60,11 @@ app.use(
 app.use(
   "/api/upload",
   uploadRoutes
+);
+
+app.use(
+  "/api/cart",
+  cartRoutes
 );
 
 

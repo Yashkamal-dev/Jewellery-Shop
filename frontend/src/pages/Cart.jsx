@@ -29,7 +29,27 @@ function Cart() {
     }
   }, []);
 
-  const loadCart = () => {
+  const loadCart = async () => {
+    const savedUser = localStorage.getItem("user");
+
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        const userId = user ? (user._id || user.id) : null;
+        if (userId) {
+          const response = await fetch(`/api/cart/${userId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setCart(data.items || []);
+            return;
+          }
+        }
+      } catch (err) {
+        console.log("Error loading cart from server:", err);
+      }
+    }
+
+    // Guest fallback
     const savedCart =
       JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -61,9 +81,30 @@ function Cart() {
   // UPDATE CART
   // =========================================================
 
-  const updateCart = (updatedCart) => {
+  const updateCart = async (updatedCart) => {
     setCart(updatedCart);
 
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        const userId = user ? (user._id || user.id) : null;
+        if (userId) {
+          await fetch(`/api/cart/${userId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ items: updatedCart }),
+          });
+          return;
+        }
+      } catch (err) {
+        console.log("Error updating cart on server:", err);
+      }
+    }
+
+    // Guest fallback
     localStorage.setItem(
       "cart",
       JSON.stringify(updatedCart)
@@ -77,7 +118,7 @@ function Cart() {
 
   const increaseQuantity = (id) => {
     const updatedCart = cart.map((item) =>
-      item._id === id
+      String(item._id) === String(id)
         ? {
             ...item,
             quantity: item.quantity + 1,
@@ -96,7 +137,7 @@ function Cart() {
   const decreaseQuantity = (id) => {
     const updatedCart = cart
       .map((item) =>
-        item._id === id
+        String(item._id) === String(id)
           ? {
               ...item,
               quantity: item.quantity - 1,
@@ -115,7 +156,7 @@ function Cart() {
 
   const removeItem = (id) => {
     const updatedCart = cart.filter(
-      (item) => item._id !== id
+      (item) => String(item._id) !== String(id)
     );
 
     updateCart(updatedCart);
@@ -195,6 +236,22 @@ function Cart() {
         alert(
           "Order placed successfully!"
         );
+
+        // Clear cart from MongoDB if user is logged in
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+          try {
+            const user = JSON.parse(savedUser);
+            const userId = user ? (user._id || user.id) : null;
+            if (userId) {
+              await fetch(`/api/cart/${userId}`, {
+                method: "DELETE",
+              });
+            }
+          } catch (err) {
+            console.log("Error clearing cart on server:", err);
+          }
+        }
 
         localStorage.removeItem(
           "cart"

@@ -27,7 +27,39 @@ function Products() {
     return `http://localhost:5000${image}`;
   };
 
-  const addToCart = (product) => {
+  const addToCart = async (product) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user ? (user._id || user.id) : null;
+
+    // If user is logged in, save cart to MongoDB
+    if (userId) {
+      try {
+        const response = await fetch("/api/cart/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+            product: product,
+          }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok) {
+          alert("Product added to cart");
+        } else {
+          alert(data.message || "Failed to add product to cart");
+        }
+      } catch (error) {
+        console.log("ADD TO CART ERROR:", error);
+        alert("Server error adding to cart");
+      }
+      return;
+    }
+
+    // Guest fallback (when not logged in)
     const oldCart =
       JSON.parse(localStorage.getItem("cart")) || [];
 
