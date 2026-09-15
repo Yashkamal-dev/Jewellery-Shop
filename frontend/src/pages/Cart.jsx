@@ -6,11 +6,27 @@ function Cart() {
   const [customerEmail, setCustomerEmail] = useState("");
 
   // =========================================================
-  // LOAD CART
+  // LOAD CART & USER DETAILS
   // =========================================================
 
   useEffect(() => {
     loadCart();
+
+    // Auto-fill logged-in user name and email if available
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        if (user.name) {
+          setCustomerName(user.name);
+        }
+        if (user.email) {
+          setCustomerEmail(user.email);
+        }
+      } catch (err) {
+        console.log("Error reading user from localStorage:", err);
+      }
+    }
   }, []);
 
   const loadCart = () => {

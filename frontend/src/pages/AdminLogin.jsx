@@ -44,34 +44,40 @@ function AdminLogin() {
   };
 
   return (
-    <div style={{ padding: "30px" }}>
-      <h1>Admin Login</h1>
+    <div className="auth-page">
+      <div className="auth-box">
+        <p className="auth-small-title">ADMINISTRATION</p>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Admin Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <h1>Admin Login</h1>
 
-        <br />
-        <br />
+        <p className="auth-subtitle">
+          Sign in to access the jewellery admin dashboard.
+        </p>
 
-        <input
-          type="password"
-          placeholder="Admin Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <form onSubmit={handleLogin}>
+          <label>Admin Email</label>
+          <input
+            type="email"
+            placeholder="Enter admin email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <br />
-        <br />
+          <label>Admin Password</label>
+          <input
+            type="password"
+            placeholder="Enter admin password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-        <button type="submit">Admin Login</button>
-      </form>
+          <button type="submit" className="auth-button">
+            Admin Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

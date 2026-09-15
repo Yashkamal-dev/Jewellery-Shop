@@ -14,6 +14,9 @@ function AdminUsers() {
       });
   }, []);
 
+  // Filter out admin accounts to show only client/customer users
+  const clientUsers = users.filter((user) => user.role !== "admin");
+
   return (
     <div className="admin-users-page">
       <div className="admin-users-container">
@@ -22,22 +25,22 @@ function AdminUsers() {
         <div className="admin-users-header">
           <p className="admin-small-title">ACCOUNTS</p>
           <h1>Registered Users</h1>
-          <p>View all registered customer and administrator accounts.</p>
+          <p>View all registered client and customer accounts.</p>
         </div>
 
         {/* User Count */}
         <div className="admin-users-count">
-          <span>Total Users: <strong>{users.length}</strong></span>
+          <span>Total Clients: <strong>{clientUsers.length}</strong></span>
         </div>
 
         {/* User Cards Grid */}
-        {users.length === 0 ? (
+        {clientUsers.length === 0 ? (
           <div className="admin-no-data">
-            <p>No users found.</p>
+            <p>No client users found.</p>
           </div>
         ) : (
           <div className="admin-users-grid">
-            {users.map((user) => (
+            {clientUsers.map((user) => (
               <div key={user._id} className="admin-user-card">
                 <div className="user-card-header">
                   <div className="user-avatar">

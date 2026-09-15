@@ -907,7 +907,9 @@ button:hover {
 ========================================================= */
 
 .admin-products-header {
-  margin-bottom: 30px;
+  max-width: 750px;
+  margin: 0 auto 30px;
+  display: block;
 }
 
 .admin-products-header .admin-small-title {
@@ -948,7 +950,7 @@ button:hover {
   width: 100%;
   max-width: 750px;
 
-  margin-bottom: 65px;
+  margin: 0 auto 65px;
   padding: 30px;
 
   background: #fffdf9;
@@ -1616,12 +1618,8 @@ button:hover {
 }
 
 .admin-products-header {
-  max-width: 1200px;
+  max-width: 750px;
   margin: 0 auto 30px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .admin-small-title {
