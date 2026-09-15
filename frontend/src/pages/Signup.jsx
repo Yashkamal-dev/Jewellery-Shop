@@ -37,13 +37,17 @@ function Signup() {
       if (response.ok) {
         alert("Signup successful");
 
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+
         setUser({
           name: "",
           email: "",
           password: "",
         });
 
-        navigate("/login");
+        navigate("/");
       } else {
         alert(data.message || "Signup failed");
       }

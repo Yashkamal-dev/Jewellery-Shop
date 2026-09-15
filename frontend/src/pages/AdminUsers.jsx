@@ -10,28 +10,63 @@ function AdminUsers() {
         setUsers(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("Error fetching users:", error);
       });
   }, []);
 
   return (
-    <div>
-      <h2>Admin - Manage Users</h2>
+    <div className="admin-users-page">
+      <div className="admin-users-container">
 
-      <h3>All Users</h3>
+        {/* Header */}
+        <div className="admin-users-header">
+          <p className="admin-small-title">ACCOUNTS</p>
+          <h1>Registered Users</h1>
+          <p>View all registered customer and administrator accounts.</p>
+        </div>
 
-      {users.length === 0 ? (
-        <p>No users found.</p>
-      ) : (
-        users.map((user) => (
-          <div key={user._id}>
-            <p>Name: {user.name}</p>
-            <p>Email: {user.email}</p>
-            <p>Role: {user.role}</p>
-            <hr />
+        {/* User Count */}
+        <div className="admin-users-count">
+          <span>Total Users: <strong>{users.length}</strong></span>
+        </div>
+
+        {/* User Cards Grid */}
+        {users.length === 0 ? (
+          <div className="admin-no-data">
+            <p>No users found.</p>
           </div>
-        ))
-      )}
+        ) : (
+          <div className="admin-users-grid">
+            {users.map((user) => (
+              <div key={user._id} className="admin-user-card">
+                <div className="user-card-header">
+                  <div className="user-avatar">
+                    {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <div className="user-title-info">
+                    <h3>{user.name || "Unnamed User"}</h3>
+                    <span className={`role-badge role-${user.role || "user"}`}>
+                      {user.role || "user"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="user-card-details">
+                  <div className="detail-row">
+                    <span className="detail-label">Email:</span>
+                    <span className="detail-value">{user.email}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="detail-label">User ID:</span>
+                    <span className="detail-value user-id-text">{user._id}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }
