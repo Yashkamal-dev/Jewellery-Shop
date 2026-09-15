@@ -197,6 +197,18 @@ function Cart() {
       return;
     }
 
+    // Read current logged-in user ID if available
+    let currentUserId = "";
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        currentUserId = user ? (user._id || user.id || "") : "";
+      } catch (err) {
+        console.log("Error reading user ID:", err);
+      }
+    }
+
     try {
       const response = await fetch(
         "/api/orders",
@@ -209,6 +221,8 @@ function Cart() {
           },
 
           body: JSON.stringify({
+            userId: currentUserId,
+
             customerName:
               customerName.trim(),
 
@@ -216,7 +230,7 @@ function Cart() {
               customerEmail.trim(),
 
             products: cart.map((item) => ({
-              productId: item._id,
+              productId: String(item._id),
               name: item.name,
               price: Number(item.price),
               quantity: Number(
@@ -238,16 +252,11 @@ function Cart() {
         );
 
         // Clear cart from MongoDB if user is logged in
-        const savedUser = localStorage.getItem("user");
-        if (savedUser) {
+        if (currentUserId) {
           try {
-            const user = JSON.parse(savedUser);
-            const userId = user ? (user._id || user.id) : null;
-            if (userId) {
-              await fetch(`/api/cart/${userId}`, {
-                method: "DELETE",
-              });
-            }
+            await fetch(`/api/cart/${currentUserId}`, {
+              method: "DELETE",
+            });
           } catch (err) {
             console.log("Error clearing cart on server:", err);
           }
