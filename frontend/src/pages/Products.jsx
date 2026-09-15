@@ -28,72 +28,44 @@ function Products() {
   };
 
   const addToCart = async (product) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem("user"));
+    } catch (err) {
+      console.log("Error parsing user:", err);
+    }
+
     const userId = user ? (user._id || user.id) : null;
 
-    // If user is logged in, save cart to MongoDB
-    if (userId) {
-      try {
-        const response = await fetch("/api/cart/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: userId,
-            product: product,
-          }),
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (response.ok) {
-          alert("Product added to cart");
-        } else {
-          alert(data.message || "Failed to add product to cart");
-        }
-      } catch (error) {
-        console.log("ADD TO CART ERROR:", error);
-        alert("Server error adding to cart");
-      }
+    // Check if user is logged in
+    if (!userId) {
+      alert("Please login to add products to cart.");
       return;
     }
 
-    // Guest fallback (when not logged in)
-    const oldCart =
-      JSON.parse(localStorage.getItem("cart")) || [];
-
-    const existingProduct = oldCart.find(
-      (item) => item._id === product._id
-    );
-
-    let updatedCart;
-
-    if (existingProduct) {
-      updatedCart = oldCart.map((item) =>
-        item._id === product._id
-          ? {
-              ...item,
-              quantity: item.quantity + 1,
-            }
-          : item
-      );
-    } else {
-      updatedCart = [
-        ...oldCart,
-        {
-          ...product,
-          quantity: 1,
+    try {
+      const response = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ];
+        body: JSON.stringify({
+          userId: userId,
+          product: product,
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        alert("Product added to cart");
+      } else {
+        alert(data.message || "Failed to add product to cart");
+      }
+    } catch (error) {
+      console.log("ADD TO CART ERROR:", error);
+      alert("Server error adding to cart");
     }
-
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(updatedCart)
-    );
-
-    alert("Product added to cart");
   };
 
   const filteredProducts =
